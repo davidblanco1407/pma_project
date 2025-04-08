@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_countries',
     'phonenumber_field',
+    'social_django',
     'usuarios',
 ]
 
@@ -126,3 +127,28 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGOUT_REDIRECT_URL = '/'  # Después de hacer logout, redirige a la página de inicio.
+
+LOGIN_REDIRECT_URL = '/'  # Después de iniciar sesión, redirige a la página de inicio.
+
+LOGIN_URL = '/login/'  # Página a la que se redirige cuando el usuario no está autenticado.
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.auth0.Auth0OAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Proveedor de autenticación
+SOCIAL_AUTH_AUTH0_KEY = 'ZWzL8dHvNyHegzSDTRFcEme92LcrI4D2'
+SOCIAL_AUTH_AUTH0_SECRET = 'vZdCzGG5JbTzkEh_JjAL0aImf0lAXyMnIWOZupGuAM6GohhiG50CCkaf8vjWGk9u'
+SOCIAL_AUTH_AUTH0_SCOPE = ['openid', 'profile', 'email']  # Solicita el perfil y correo electrónico del usuario
+
+# Configurar el dominio de Auth0
+SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-eabemoo16zbdhdd6.us.auth0.com'
+
+# Configura la URL de redirección de Auth0 después del login
+SOCIAL_AUTH_AUTH0_REDIRECT_URI = 'http://localhost:8000/complete/auth0/'
+
+# Configurar la URL de logout
+SOCIAL_AUTH_AUTH0_LOGOUT_URI = 'http://localhost:8000/logout/'

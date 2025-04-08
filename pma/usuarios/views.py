@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 # Vista de Registro de Usuario
 def registro(request):
@@ -11,27 +12,16 @@ def registro(request):
         if form.is_valid():
             usuario = form.save()
             login(request, usuario)
-            return redirect("home")
-    else:
-        form = RegistroUsuarioForm()
-    return render(request, "usuarios/registro.html", {"form": form})
-
-# Vista de Inicio de Sesión
-def inicio_sesion(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        usuario = authenticate(request, username=username, password=password)
-        if usuario is not None:
-            login(request, usuario)
+            messages.success(request, "¡Registro exitoso! Has iniciado sesión correctamente.")
             return redirect("home")
         else:
-            # Agregar un mensaje de error si las credenciales son incorrectas
-            messages.error(request, "Usuario o contraseña incorrectos.")
-    # Si el método es GET o la autenticación falla, renderiza el formulario de login
-    form = AuthenticationForm()
-    return render(request, "usuarios/login.html", {"form": form})
+            # Mensajes de error si el formulario no es válido
+            messages.error(request, "Hubo un problema al registrar al usuario. Por favor, revisa los datos ingresados.")
+    else:
+        form = RegistroUsuarioForm()
+    return render(request, "registration/register.html", {"form": form})
 
 # Vista de Home
+@login_required  # Aseguramos que solo los usuarios autenticados puedan acceder a esta vista
 def home(request):
     return render(request, "home.html")
