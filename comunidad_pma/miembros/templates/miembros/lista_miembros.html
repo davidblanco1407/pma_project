@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Miembros del Grupo</h1>
+<a class="btn" href="{% url 'miembros:crear_miembro' %}">+ Agregar Miembro</a>
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>País</th>
+        <th>Acciones</th>
+    </tr>
+    {% for miembro in miembros %}
+    <tr>
+        <td>{{ miembro.nombre_completo }}</td>
+        <td>{{ miembro.email }}</td>
+        <td>{{ miembro.numero_telefono }}</td>
+        <td>{{ miembro.pais }}</td>
+        <td>
+            <a class="btn" href="{% url 'miembros:detalle_miembro' miembro.pk %}">Ver</a>
+            <a class="btn" href="{% url 'miembros:editar_miembro' miembro.pk %}">Editar</a>
+            <a class="btn" href="{% url 'miembros:eliminar_miembro' miembro.pk %}">Eliminar</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No hay miembros aún.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

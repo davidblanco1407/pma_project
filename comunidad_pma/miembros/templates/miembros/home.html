@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Buscar Miembro por Correo</h2>
+<form method="post">
+    {% csrf_token %}
+    <input type="email" name="correo" placeholder="Correo electrónico" required>
+    <button type="submit">Buscar</button>
+</form>
+
+<hr>
+
+<h3>Administradores</h3>
+{% if user.is_authenticated %}
+    <p>Bienvenido, {{ user.username }}</p>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Cerrar sesión</button>
+    </form>
+    <a href="{% url 'miembros:lista_miembros' %}">Ir al Panel de Administración</a>
+{% else %}
+    <a href="{% url 'login' %}">Iniciar sesión como administrador</a>
+{% endif %}
+{% endblock %}

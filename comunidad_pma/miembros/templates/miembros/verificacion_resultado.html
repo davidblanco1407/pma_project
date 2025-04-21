@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Resultado de la búsqueda</h2>
+
+<p><strong>Nombre:</strong> {{ miembro.nombre_completo }}</p>
+<p><strong>Email:</strong> {{ miembro.email }}</p>
+<p><strong>Teléfono:</strong> {{ miembro.numero_telefono }}</p>
+<p><strong>País:</strong> {{ miembro.pais }}</p>
+<p><strong>Estado:</strong> 
+    {% if miembro.activo %}
+        Activo ✅
+    {% else %}
+        Inactivo ❌
+    {% endif %}
+</p>
+
+<a href="{% url 'miembros:solicitar_correccion' miembro.pk %}">Reportar error en los datos</a><br>
+<a href="{% url 'home' %}">Volver</a>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Detalle de Miembro</h1>
+
+<section aria-labelledby="miembro-info">
+    <p><strong>Nombre:</strong> {{ miembro.nombre_completo }}</p>
+    <p><strong>Email:</strong> {{ miembro.email }}</p>
+    <p><strong>Teléfono:</strong> {{ miembro.numero_telefono }}</p>
+    <p><strong>País:</strong> {{ miembro.pais }}</p>
+    <p><strong>Activo:</strong> {{ miembro.activo }}</p>
+    <p><strong>Puede regresar:</strong> {{ miembro.puede_regresar }}</p>
+    <p><strong>Fecha de registro:</strong> {{ miembro.fecha_registro }}</p>
+</section>
+
+<h2>Sanciones</h2>
+<section aria-labelledby="sanciones-list">
+    <ul>
+        {% for sancion in miembro.sanciones.all %}
+            <li>{{ sancion.fecha|date:"Y-m-d H:i" }} - {{ sancion.motivo }} ({{ sancion.cantidad_llamados }} llamados)</li>
+        {% empty %}
+            <li>Sin sanciones</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<div class="btn-container">
+    <a class="btn" href="{% url 'miembros:crear_sancion' miembro.pk %}" aria-label="Añadir sanción al miembro">+ Añadir Sanción</a>
+    <a class="btn" href="{% url 'miembros:lista_miembros' %}" aria-label="Volver a la lista de miembros">Volver</a>
+</div>
+{% endblock %}

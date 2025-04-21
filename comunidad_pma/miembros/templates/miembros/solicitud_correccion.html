@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Solicitud de corrección</h2>
+<p>Estás solicitando una corrección para <strong>{{ miembro.nombre_completo }}</strong> ({{ miembro.email }})</p>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="descripcion">Describe el error:</label><br>
+    <textarea name="descripcion" rows="4" cols="50" required></textarea><br><br>
+    <button type="submit">Enviar solicitud</button>
+    <a href="{% url 'home' %}">Cancelar</a>
+</form>
+{% endblock %}

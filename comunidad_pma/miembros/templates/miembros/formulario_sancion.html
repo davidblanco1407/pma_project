@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Añadir Sanción</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Guardar Sanción</button>
+    <a class="btn" href="{% url 'miembros:detalle_miembro' pk %}">Cancelar</a>
+</form>
+{% endblock %}
