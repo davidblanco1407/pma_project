@@ -5,9 +5,20 @@
 
 <form method="post">
     {% csrf_token %}
-    <label for="descripcion">Describe el error:</label><br>
-    <textarea name="descripcion" rows="4" cols="50" required></textarea><br><br>
-    <button type="submit">Enviar solicitud</button>
-    <a href="{% url 'home' %}">Cancelar</a>
+
+    <div class="form-group">
+        <label for="{{ form.descripcion.id_for_label }}">Descripción del error</label>
+        {{ form.descripcion }}
+        {% if form.descripcion.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.descripcion.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar solicitud</button>
+    <a class="btn btn-secondary" href="{% url 'home' %}">Cancelar</a>
 </form>
 {% endblock %}

@@ -25,7 +25,11 @@
 </section>
 
 <div class="btn-container">
-    <a class="btn" href="{% url 'miembros:crear_sancion' miembro.pk %}" aria-label="Añadir sanción al miembro">+ Añadir Sanción</a>
+    {% if miembro.activo and miembro.puede_regresar %}
+        <a class="btn" href="{% url 'miembros:crear_sancion' miembro.pk %}" aria-label="Añadir sanción al miembro">+ Añadir Sanción</a>
+    {% else %}
+        <span class="btn disabled" aria-disabled="true">Miembro inactivo</span>
+    {% endif %}
     <a class="btn" href="{% url 'miembros:lista_miembros' %}" aria-label="Volver a la lista de miembros">Volver</a>
 </div>
 {% endblock %}

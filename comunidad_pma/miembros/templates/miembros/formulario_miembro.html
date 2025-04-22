@@ -2,10 +2,112 @@
 
 {% block content %}
 <h1>{% if form.instance.pk %}Editar{% else %}Crear{% endif %} Miembro</h1>
-<form method="post">
+
+<form method="post" autocomplete="on">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn">Guardar</button>
-    <a class="btn" href="{% url 'miembros:lista_miembros' %}">Cancelar</a>
+    
+    {% for field in form.visible_fields %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a class="btn btn-secondary" href="{% url 'miembros:lista_miembros' %}">Cancelar</a>
 </form>
+
+<!-- intl-tel-input para el campo de teléfono -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/css/intlTelInput.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/intlTelInput.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/utils.js"></script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const emailInput = document.getElementById('id_email');
+    if (!emailInput) {
+        console.error("No se encontró el campo de correo electrónico en el formulario");
+        return;
+    }
+
+    const feedback = document.createElement('div');
+    feedback.id = 'correo-feedback';
+    feedback.classList.add('mt-2');
+    emailInput.parentNode.appendChild(feedback);
+
+    emailInput.addEventListener('input', function () {
+        const correo = emailInput.value.trim();
+        feedback.innerHTML = ''; 
+        if (correo.length > 0) {
+            fetch(`/miembros/verificar-correo/?correo=${encodeURIComponent(correo)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.existe) {
+                        if (!data.activo && data.puede_regresar) {
+                            feedback.innerHTML = `
+                                <div class="alert alert-warning">
+                                    El miembro <strong>${data.nombre}</strong> está inactivo pero puede volver.
+                                    <a href="/miembros/editar/${data.id}/" class="btn btn-sm btn-outline-primary mt-2">Reactivar</a>
+                                </div>
+                            `;
+                        } else if (!data.activo && !data.puede_regresar) {
+                            feedback.innerHTML = `
+                                <div class="alert alert-danger">
+                                    El miembro <strong>${data.nombre}</strong> no puede volver.
+                                    <button class="btn btn-danger mt-2" onclick="reactivarMiembro(${data.id})">Reactivar Miembro</button>
+                                </div>
+                            `;
+                        } else {
+                            feedback.innerHTML = `
+                                <div class="alert alert-info">
+                                    El miembro <strong>${data.nombre}</strong> ya está activo.
+                                    <a href="/miembros/detalle/${data.id}/" class="btn btn-sm btn-outline-info mt-2">Ver detalles</a>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        feedback.innerHTML = `<div class="alert alert-success">Este correo está disponible.</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar el correo:', error);
+                    feedback.innerHTML = `<div class="alert alert-danger">Hubo un error al verificar el correo.</div>`;
+                });
+        }
+    });
+});
+
+function reactivarMiembro(id) {
+    fetch(`/miembros/reactivar/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'  // Token CSRF para la protección
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = "{% url 'miembros:lista_miembros' %}";  // Redirige a la lista de miembros
+        } else {
+            alert('Hubo un error al reactivar al miembro.');
+        }
+    })
+    .catch(error => {
+        console.error('Error al reactivar el miembro:', error);
+        alert('Hubo un error inesperado.');
+    });
+}
+</script>
 {% endblock %}

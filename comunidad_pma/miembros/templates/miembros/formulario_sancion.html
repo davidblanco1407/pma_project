@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <h1>Añadir Sanción</h1>
+
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn">Guardar Sanción</button>
-    <a class="btn" href="{% url 'miembros:detalle_miembro' pk %}">Cancelar</a>
+
+    {% for field in form.visible_fields %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Guardar Sanción</button>
+    <a class="btn btn-secondary" href="{% url 'miembros:detalle_miembro' pk %}">Cancelar</a>
 </form>
 {% endblock %}
