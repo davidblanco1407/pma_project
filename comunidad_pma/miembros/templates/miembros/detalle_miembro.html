@@ -25,11 +25,56 @@
 </section>
 
 <div class="btn-container">
-    {% if miembro.activo and miembro.puede_regresar %}
-        <a class="btn" href="{% url 'miembros:crear_sancion' miembro.pk %}" aria-label="Añadir sanción al miembro">+ Añadir Sanción</a>
-    {% else %}
-        <span class="btn disabled" aria-disabled="true">Miembro inactivo</span>
+    <!-- Mostrar botón de agregar sanción solo si el miembro está activo -->
+    {% if miembro.activo %}
+        <a class="btn" href="{% url 'miembros:crear_sancion' miembro.pk %}">+ Añadir Sanción</a>
     {% endif %}
-    <a class="btn" href="{% url 'miembros:lista_miembros' %}" aria-label="Volver a la lista de miembros">Volver</a>
+
+    <!-- Mostrar botón de reactivar solo si el miembro está inactivo y puede regresar -->
+    {% if not miembro.activo and miembro.puede_regresar %}
+        <button class="btn btn-warning" onclick="reactivarMiembro({{ miembro.id }})">Reactivar Miembro</button>
+    {% endif %}
+
+    <a class="btn" href="{% url 'miembros:lista_miembros' %}">Volver</a>
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCSRFToken() {
+    const name = 'csrftoken';
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) {
+            return decodeURIComponent(cookie.substring(name.length + 1));
+        }
+    }
+    return '';
+}
+
+function reactivarMiembro(id) {
+    fetch(`/miembros/reactivar/${id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = "{% url 'miembros:lista_miembros' %}";  // Redirige a la lista de miembros
+        } else {
+            alert(data.message || 'No se pudo reactivar al miembro.');
+        }
+    })
+    .catch(error => {
+        console.error('Error al reactivar el miembro:', error);
+        alert('Hubo un error inesperado.');
+    });
+}
+</script>
 {% endblock %}

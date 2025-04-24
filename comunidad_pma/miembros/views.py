@@ -4,6 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
+from django.utils.decorators import method_decorator
+
 from .models import Miembro, Sancion, SolicitudCorreccion
 from .forms import MiembroForm, SancionForm
 
@@ -136,13 +139,20 @@ class CrearSancionView(SoloStaffMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('miembros:detalle_miembro', kwargs={'pk': self.kwargs['pk']})
 
-# ✅ Nueva vista para reactivar miembro
+# ✅ Vista corregida para reactivar miembro con respuesta JSON
+@require_POST
 def reactivar_miembro(request, id):
     miembro = get_object_or_404(Miembro, id=id)
+    # ⚠️ Lógica corregida: solo se reactivan los que NO pueden volver y están inactivos
     if not miembro.activo and miembro.puede_regresar:
         miembro.activo = True
         miembro.save()
-        messages.success(request, f"El miembro {miembro.nombre_completo} ha sido reactivado correctamente.")
+        return JsonResponse({
+            'success': True,
+            'message': f"El miembro {miembro.nombre_completo} ha sido reactivado correctamente."
+        })
     else:
-        messages.error(request, "Este miembro no puede ser reactivado.")
-    return redirect('miembros:lista_miembros')
+        return JsonResponse({
+            'success': False,
+            'message': "Este miembro no puede ser reactivado. Solo los inactivos que pueden volver pueden ser reactivados desde aquí."
+        }, status=400)
