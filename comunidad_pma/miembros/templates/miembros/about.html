@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center">
+        <h1 class="display-4">Acerca de Producción Musical Accesible</h1>
+        <p class="lead">Bienvenido a la comunidad de <strong>Producción Musical Accesible</strong>, un espacio creado por Mauricio Haro, productor y cantante ecuatoriano, con el propósito de compartir conocimientos y fomentar el aprendizaje en áreas como producción musical, canto, mezcla, dirección de estaciones de radio y otros aspectos relacionados con el audio, todo desde una perspectiva accesible.</p>
+        <p class="lead">Nuestro objetivo principal es promover la colaboración y el intercambio de conocimientos entre los miembros de esta comunidad, creando un entorno inclusivo y enriquecedor para todos.</p>
+    </div>
+    <div class="mt-4">
+        <p>A través de esta plataforma, aspiramos a construir un espacio que impulse el desarrollo personal y profesional de sus integrantes.</p>
+        <p>Si tienes alguna consulta o deseas contribuir a este proyecto, no dudes en ponerte en contacto con nosotros. <strong>¡Gracias por formar parte de esta iniciativa!</strong></p>
+        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#contactModal">
+            Contáctanos
+        </button>
+    </div>
+</div>
+
+<!-- Modal de contacto -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Contáctanos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Si deseas ponerte en contacto con nosotros, puedes escribirnos al siguiente correo:</p>
+                <p><strong>pmacorporation.sa@gmail.com</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

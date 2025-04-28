@@ -156,3 +156,12 @@ def reactivar_miembro(request, id):
             'success': False,
             'message': "Este miembro no puede ser reactivado. Solo los inactivos que pueden volver pueden ser reactivados desde aquí."
         }, status=400)
+
+def about(request):
+    return render(request, "miembros/about.html")
+
+def error_404(request, exception):
+    """
+    Vista personalizada para manejar errores 404.
+    """
+    return render(request, 'miembros/404.html', status=404)

@@ -68,7 +68,7 @@
         <div class="container d-flex justify-content-between align-items-center">
             <div>
                 <a href="{% url 'home' %}" class="fw-bold">Inicio</a>
-                <a href="#">Más información</a>
+                <a href="{% url 'miembros:about' %}">Más información</a>
             </div>
             <div class="d-flex align-items-center">
                 {% if user.is_authenticated %}

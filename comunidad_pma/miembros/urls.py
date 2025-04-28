@@ -13,5 +13,9 @@ urlpatterns = [
     path('detalle/<int:pk>/', views.DetalleMiembroView.as_view(), name='detalle_miembro'),
     path('sancion/crear/<int:pk>/', views.CrearSancionView.as_view(), name='crear_sancion'),
     path('verificar-correo/', views.verificar_correo, name='verificar_correo'),
-    path('reactivar/<int:id>/', views.reactivar_miembro, name='reactivar_miembro'),  # Nueva ruta para reactivar
+    path('reactivar/<int:id>/', views.reactivar_miembro, name='reactivar_miembro'),
+    path('about/', views.about, name='about'),  # Nueva ruta para la página "Acerca de"
 ]
+
+# Configuración para manejar errores 404
+handler404 = 'miembros.views.error_404'
